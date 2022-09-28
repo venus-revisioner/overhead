@@ -7,7 +7,7 @@ def grid_spacing(lo, hi, amt, decimals):
 	grid = np.linspace(lo,hi,amt)
 	grid = np.around(np.array(grid), decimals)
 	# [print(i) for i in grid]
-	pprint(grid)
+	# pprint(grid)
 	return grid
 
 

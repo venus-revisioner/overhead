@@ -1,23 +1,21 @@
-import itertools
 from dataclasses import dataclass
+import itertools
+import os
 from pathlib import Path
 from pprint import pprint
 import sys
 import threading
 import time
-
-# Importing all the modules in the __all__ list.
-
-import os
-
-# import importlib
-# importlib.importmodule(("apps", "coin_config", "grid_calculator"))
+from typing import Any
+from binance import Client
+import json
 import websocket
 
-from ..jsonoh import JSONhelper
-from ..decooh import terminal_rolling
-from ..toolboxoh import KeyHandler
-from ..decooh import terminal_rolling
+from overhead.cryptooh import grid_calculator
+from overhead.decooh import terminal_rolling
+from overhead.jsonoh import JSONhelper
+from overhead.terminaloh import Terminal
+from overhead.toolboxoh import KeyHandler
 
 
 
@@ -35,20 +33,21 @@ class CoinsCandles:
 	CANDLES_ALL: tuple = ("1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M")
 	CANDLES_7_TODAY: tuple = ("5m", "15m", "1h", "4h", "12h", "1d", "3d")
 
+
 @dataclass
 class ConfigParameters:
-	_BINANCE_PATH: Path = Path("D:/PycharmProjects/Binance")
-	BINANCE_API_KEY: str = "rWpEV2x1Kj2AwzPVgXQBMyWzsTCPIjnMoXMeCvfd9f1iZFWSOSRRHHI6CVQbGk4T"
-	BINANCE_API_SECRET: str = "i9K42DnBQVeCOwcwF2P93QBi2ziEnMLu0TeVaUb4VRgl3soFG4cKj0Cr6LkHXrHP"
+	_BINANCE_PATH: Path = Path("D:/OVERHEAD_PYTHON/overhead/cryptooh/binance")
+	_BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
+	_BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
 	PORTFOLIO_BINANCE: Path = Path(_BINANCE_PATH).joinpath("portfolio_binance.json")
 	PORTFOLIO_CRYPTO: str = Path(_BINANCE_PATH).joinpath("portfolio_crypto.json")
 	BINANCE_HISTORY_START_TIMESTAMP: int = 1621433867000
 
 	@property
 	def get_binance(self):
-		json = JSONhelper()
+		JSON = JSONhelper()
 		print(Path("."))
-		return json.load_file(self.PORTFOLIO_BINANCE)
+		return JSON.load_file(self.PORTFOLIO_BINANCE)
 
 	@property
 	def get_crypto(self):
@@ -65,13 +64,14 @@ class ConfigParameters:
 	def get_coins_assets(self, portfolio, wallet):
 		return {item['asset'] + "BUSD": float(item['netAsset']) for item in portfolio['wallet'][wallet]['assets']}
 
+
 class BinanceStreamThread(threading.Thread):
 	def __init__(self, socket, poll_time=1.):
 		threading.Thread.__init__(self)
 		self.socket = socket
 		self.poll_time = poll_time
 		self.result = None
-		self.stream_decoder = json.decoder.JSONDecoder()
+		self.stream_decoder = json.JSONDecoder()
 		self.quit_flag = False
 		self.stream_data = None
 
@@ -102,9 +102,12 @@ class BinanceStreamThread(threading.Thread):
 
 
 class BinanceStream(threading.Thread):
-	def __init__(self, coins, candles=("1m",), verbose=True, simple=False):
+	def __init__(self, coins: object, candles: object = ("1m",), verbose: object = True, simple: object = False) -> object:
 
 		threading.Thread.__init__(self)
+		# self.real_time_prices = None
+		# self.coin_dict = None
+		self.terminal = Terminal()
 		self.VERBOSE = verbose
 		self.SIMPLE = simple
 		self.POLL_TIME = 1 / 6
@@ -123,7 +126,6 @@ class BinanceStream(threading.Thread):
 	def run(self):
 		print("INITIALIZING STREAM...")
 		if self.VERBOSE or self.SIMPLE:
-			self.terminal = Terminal()
 			self.terminal.clear()
 			terminal_dim = self.WIDTH, len(self.coins) + 4
 			self.terminal.resize(*terminal_dim)
@@ -172,12 +174,12 @@ class BinanceStream(threading.Thread):
 			candle = self.candles[0]
 		self.terminal.clear()
 		print(f'{"BINANCE STREAM":^{self.WIDTH}}')
-		print("-" * (self.WIDTH))
+		print("-" * self.WIDTH)
 		for k in self.coin_dict.keys():
 			if len(self.coin_dict[k][candle]) > 0 and float(self.real_time_prices[k]) > 0.:
 				data_str = f'{k.upper():12}{self.real_time_prices[k]}'
 				print(data_str)
-		print("-" * (self.WIDTH))
+		print("-" * self.WIDTH)
 
 	@terminal_rolling
 	def wrap_real_time_prices(self, price_dict, *args, **kwargs):
@@ -215,12 +217,11 @@ class BinanceStream(threading.Thread):
 
 class BinanceFunctions:
 	def __init__(self):
-		from binance import Client
 		#-----------------------------------------------------
-		self._json = JSON()
+		self._json = JSONhelper()
 		self.CONFIG = ConfigParameters()
-		_API_KEY = self.CONFIG.BINANCE_API_KEY
-		_API_SECRET = self.CONFIG.BINANCE_API_SECRET
+		_API_KEY = self.CONFIG._BINANCE_API_KEY
+		_API_SECRET = self.CONFIG._BINANCE_API_SECRET
 		self._PORTFOLIO_CRYPTO = self.CONFIG.PORTFOLIO_CRYPTO
 		self._PORTFOLIO_BINANCE = self.CONFIG.PORTFOLIO_BINANCE
 		self._BINANCE_HISTORY_START_TIMESTAMP = self.CONFIG.BINANCE_HISTORY_START_TIMESTAMP
@@ -228,7 +229,7 @@ class BinanceFunctions:
 		self.portfolio_crypto = self._json.load_file(self._PORTFOLIO_CRYPTO)
 		self.portfolio_binance = self._json.load_file(self._PORTFOLIO_BINANCE)
 		#-----------------------------------------------------
-		self._client = Client(_API_KEY, _API_SECRET)
+		self._client = Client(api_key=_API_KEY, api_secret=_API_SECRET)
 
 		self.ASSET_VALUES = {}
 
@@ -275,14 +276,13 @@ class BinanceFunctions:
 			fiat_deposits[e] = {"date": deposit_time, "amount": amt, "currency": currency}
 			fiat_deposits['total_sum'] += amt
 		fiat_deposits['total_sum'] = round(fiat_deposits['total_sum'],3)
-		pprint(fiat_deposits)
+		# pprint(fiat_deposits)
 		self.portfolio_crypto['binance_deposits'] = fiat_deposits
 		# pprint(self.portfolio_crypto)
 		if save:
 			self._json.save_file(self._PORTFOLIO_CRYPTO, self.portfolio_crypto, mode='+w')
 		else:
 			print(f'\nDATA NOT SAVED TO file: "{self._PORTFOLIO_CRYPTO}"')
-
 
 	def account_update_json(self, wallet="SPOT"):
 		my_balances = self.portfolio_binance
@@ -344,7 +344,7 @@ class BinanceFunctions:
 		return round(interest_bnb * float(b['bnbbusd']), 4)
 
 	def risk_ratio(self):
-		risk_ratio = self.ASSET_VALUES['MARGIN_EQUITY'] / ((self.ASSET_VALUES['BORROWED'] * -1. + self.ASSET_VALUES['INTEREST']))
+		risk_ratio = self.ASSET_VALUES['MARGIN_EQUITY'] / (self.ASSET_VALUES['BORROWED'] * -1. + self.ASSET_VALUES['INTEREST'])
 		return round(risk_ratio, 3)
 
 	def total_asset_values(self, a, b):
@@ -358,9 +358,6 @@ class BinanceFunctions:
 		return self.ASSET_VALUES
 
 
-from typing import Any
-
-
 def coin_change(new, old):
 	return (float(new) / float(old)) * 100 - 100
 
@@ -372,8 +369,8 @@ def volatility(high, low):
 
 
 def candle_normalize(low, high, close):
-	range = float(high) - float(low)
-	return (float(close) - float(low)) / range if range > 0.0 else 0.0
+	range_c = float(high) - float(low)
+	return (float(close) - float(low)) / range_c if range_c > 0.0 else 0.0
 
 
 def candle_normalize_invert(low, high, normalized):

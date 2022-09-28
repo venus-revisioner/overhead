@@ -225,14 +225,14 @@ def get_user_name():
 	return user_name
 
 
+def signal_handler(signal, frame):
+	print("\nProgram exiting gracefully <3")
+	sys.exit(0)
+
+
 class QuitSignal:
-
 	def __init__(self):
-		signal.signal(signal.SIGINT, self.signal_handler)
-
-	def signal_handler(self, signal, frame):
-		print("\nProgram exiting gracefully <3")
-		sys.exit(0)
+		signal.signal(signal.SIGINT, signal_handler)
 
 
 class KeyHandler(threading.Thread):
@@ -964,7 +964,7 @@ class FileManager:
 	"""Manage importing, exporting, parsing and creating
 	files and folders."""
 
-	def __init__(self, query=None, folder=None, file=None, ext_filter=".jpg", verbose=0):
+	def __init__(self, query=None, folder=None, file=None, ext_filter=".", verbose=0):
 		self.root = None
 		self.folder = folder
 		self.file = file
@@ -1178,6 +1178,14 @@ class FileManager:
 
 	def print_folder_info(self):
 		print_boxed(f'Folder {self.folder} contains {len(self.file_dict)} files')
+		
+	def batch_rename(self, new_name):
+		for f in self.files:
+			ext = Path(self.files[f]).suffix.__str__()
+			new = f'{new_name}_{f}{ext}'
+			self.move_file(self.files_full_path[f], "./new", new)
+
+
 
 
 class TextFileIterator:
