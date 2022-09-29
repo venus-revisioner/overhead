@@ -20,7 +20,7 @@ name = "overhead"
 version = "0.6.9"
 description = "My package description"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = ["one", "two"]
 license = {text = "LICENSE"}
 classifiers = [
