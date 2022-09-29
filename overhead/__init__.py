@@ -1,9 +1,10 @@
 
-# from setuptools import setup
-#
+from setuptools import setuptools, setup
+setup(1)
+
 #
 # setup(name             = "overhead",
-#       version          = "0.6.6",
+#       version          = "0.6.9",
 #       author           = "venus-revisioner",
 #       author_email     = "johan.uhd@gmail.com",
 #       url              = "https://github.com/venus-revisioner/overhead-0.6.6.git",

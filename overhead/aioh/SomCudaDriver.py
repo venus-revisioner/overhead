@@ -468,30 +468,27 @@ class SomWorker(SomCupy):
 				break
 			if not self.iter_complete:
 				time.sleep(1 / 60.0)
+			elif self.predict_all:
+				if iter_permute < len(self._training_pool) and iter_counter % 10 == 0:
+					p = self._training_pool[iter_permute % len(self._training_pool)]
+					prediction = self.predict(p)
+					print(f'PREDICTING {iter_permute}: {p} -- LOCATION: {prediction[::-1]}')
+					prediction = None
+
+					iter_permute += 1
+
+				if iter_permute == len(self._training_pool):
+					print_boxed("PREDICTION COMPLETED")
+					print("PRESS ESC TO EXIT...")
+					iter_permute += 1
+
 			else:
-				if self.predict_all:
-					if iter_permute < len(self._training_pool) and iter_counter % 10 == 0:
-						p = self._training_pool[iter_permute % len(self._training_pool)]
-						prediction = self.predict(p)
-						print(f'PREDICTING {iter_permute}: {p} -- LOCATION: {prediction[::-1]}')
-						prediction = None
-						
-						iter_permute += 1
-					
-					if iter_permute == len(self._training_pool):
-						print_boxed("PREDICTION COMPLETED")
-						print("PRESS ESC TO EXIT...")
-						iter_permute += 1
-					
-					# unless... testing some possible iterpolation functionality
-					else:
-						# self.move_test(iter_permute)
-						# iter_permute += 1
-						pass
-				
-				else:
-					break
-			
+				self.canvas.stop = True
+				self.canvas._closed = True
+				self.canvas.quit()
+				self.stop()
+				break
+
 			self.canvas.injection(self.get_weights)
 			iter_counter += 1
 	

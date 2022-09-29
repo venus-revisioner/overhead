@@ -1186,8 +1186,6 @@ class FileManager:
 			self.move_file(self.files_full_path[f], "./new", new)
 
 
-
-
 class TextFileIterator:
 
 	def __init__(self, path=None):

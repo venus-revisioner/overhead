@@ -5,21 +5,11 @@ import = {"setuptools.setup" = "setuptools.find_packages"}
 # DYNAMIC
 #[project]
 #name = "overhead"
-#dynamic = ["0.6.9", "readme"]
-
-# Importing all the modules in the __all__ list.
-# import os
-# import importlib
-#
-#
-## ???
-# overpackages = os.listdir(".")
-# __all__ = [i for i in overpackages if "__" not in i]
-# print(__all__)
-# [importlib.import_module(f'{i.replace(".py", "")}') for i in __all__]
+#dynamic = ["0.6.7", "readme"]
 
 
 ####
+
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]
@@ -30,11 +20,16 @@ name = "overhead"
 version = "0.6.9"
 description = "My package description"
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 keywords = ["one", "two"]
 license = {text = "LICENSE"}
+classifiers = [
+    "Framework :: Python",
+    "Programming Language :: Python :: 3",
+]
 dependencies = [
-    "requests", "pip"
+    "requests",
+    'importlib-metadata; python_version<"3.8"',
 ]
 # dynamic = ["version"]
 
@@ -55,14 +50,11 @@ exclude = ["./*/"]  # exclude packages matching these glob patterns (empty by de
 namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 
- [tool.setuptools]
- packages = ["overhead"]
+# [tool.setuptools]
+# packages = ["my_package"]
 
 
 #After building your package, you can have a look if all the files are correct (nothing missing or extra), by running the following commands:
 #
 #tar tf dist/*.tar.gz
 #unzip -l dist/*.whl
-
-
-
