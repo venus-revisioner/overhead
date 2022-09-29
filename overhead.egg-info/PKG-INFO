@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: overhead
+Version: 0.6.9
+Summary: My package description
+Home-page: https://github.com/venus-revisioner/overhead.git
+Author: venus-revisioner
+Author-email: johan.uhd@gmail.com
+License: LICENSE
+Keywords: one,two
+Classifier: Framework :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10
+Description-Content-Type: text/x-rst
