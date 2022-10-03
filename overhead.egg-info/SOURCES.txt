@@ -1,13 +1,8 @@
 LICENSE
 README.rst
 pyproject.toml
-requirements.txt
 setup.py
-.github/workflows/main.yml
-.idea/.gitignore
-dist/overhead-0.6.9-py3-none-any.whl
-overhead/LICENSE
-overhead/README.rst
+dist/overhead-0.7.0-py3-none-any.whl
 overhead/__init__.py
 overhead/dataoh.py
 overhead/decooh.py
