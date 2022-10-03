@@ -1,6 +1,13 @@
+LICENSE
+README.rst
 pyproject.toml
 requirements.txt
 setup.py
+.github/workflows/main.yml
+.idea/.gitignore
+dist/overhead-0.6.9-py3-none-any.whl
+overhead/LICENSE
+overhead/README.rst
 overhead/__init__.py
 overhead/dataoh.py
 overhead/decooh.py
@@ -10,6 +17,7 @@ overhead/jsonoh.py
 overhead/midioh.py
 overhead/netoh.py
 overhead/pathoh.py
+overhead/requirements.txt
 overhead/speechoh.py
 overhead/stringoh.py
 overhead/terminaloh.py
@@ -39,5 +47,6 @@ overhead/cryptooh/grid_calculator.py
 overhead/opengloh/__init__.py
 overhead/opengloh/shaders/basic_shader.glsl
 overhead/opengloh/shaders/basic_shader_old.glsl
+overhead/opengloh/shaders/color_hsv_analysis_split.glsl
 overhead/opengloh/shaders/function_drawing.glsl
 overhead/opengloh/shaders/screen_divide.glsl

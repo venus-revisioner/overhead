@@ -1,14 +1,5 @@
 import = {"setuptools.setup" = "setuptools.find_packages"}
 
-#setup()
-
-# DYNAMIC
-#[project]
-#name = "overhead"
-#dynamic = ["0.6.7", "readme"]
-
-
-####
 
 
 [build-system]
@@ -17,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "overhead"
-version = "0.6.9"
+version = "0.7.0"
 description = "My package description"
 readme = "README.rst"
 requires-python = ">=3.10"
@@ -31,7 +22,7 @@ dependencies = [
     "requests",
     'importlib-metadata; python_version<"3.8"',
 ]
-# dynamic = ["version"]
+
 
 # [project.optional-dependencies]
 # pdf = ["ReportLab>=1.2", "RXP"]
