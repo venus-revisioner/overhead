@@ -140,7 +140,7 @@ class ShowImage:
 
 
 class Canvas(app.Canvas):
-    def __init__(self, canvas_size=(512, 512), tex_size=(512, 512), canvas_sca=1.0, canvas_pos=None):
+    def __init__(self, canvas_size=(512, 512), tex_size=(512, 512), canvas_sca=1.0, canvas_pos=None, glsl='basic_shader_old.glsl'):
 
         screen_info = get_monitors()[0]
         self.display_max_resolution = screen_info.width, screen_info.height
@@ -158,6 +158,10 @@ class Canvas(app.Canvas):
         else:
             self.canvas_pos = self.display_max_resolution[0] - self.canvas_size[0] - 1, 1
         self.stop_flag = 0
+        
+        self._closed = False
+        self.glsl = glsl
+        
         app.Canvas.__init__(self, keys='interactive', size=self.canvas_size, position=self.canvas_pos, decorate=False)
 
         self.hw = self.tex_size
@@ -174,14 +178,14 @@ class Canvas(app.Canvas):
 
         self.rgb_inject = np.zeros((self.hw[0], self.hw[1], 3)).astype(np.float32)
         try:
-            self.shader_path = f'basic_shader.glsl'
+            self.shader_path = self.glsl
             self.VERT_SHADER, self.FRAG_SHADER = slice_glsl(self.shader_path)
             self.program = gloo.Program(self.VERT_SHADER, self.FRAG_SHADER)
         except Exception as e:
             print(e)
         finally:
             # self.shader_path = f"{Path(os.getcwd())}/shaders/opengloh/shaders/basic_shader_old.glsl)"
-            self.shader_path = f'basic_shader_old.glsl'
+            self.shader_path = self.glsl
             self.VERT_SHADER, self.FRAG_SHADER = slice_glsl(self.shader_path)
             self.program = gloo.Program(self.VERT_SHADER, self.FRAG_SHADER)
         self.texture = gloo.Texture2D(self.rgb_array, interpolation='linear', wrapping='repeat')
@@ -196,6 +200,21 @@ class Canvas(app.Canvas):
         self.projection = ortho(0, self.hw[0], 0, self.hw[1], -1, 1)
         self.program['u_projection'] = self.projection
         gloo.set_clear_color('white')
+        
+        self.img_array1 = np.random.uniform(0, 1, (W, H, 3)).astype(np.float32)
+        self.img_array2 = np.random.uniform(0, 1, (W, H, 3)).astype(np.float32)
+        self.img_array3 = np.random.uniform(0, 1, (W, H, 3)).astype(np.float32)
+        self.img_array4 = np.random.uniform(0, 1, (W, H, 3)).astype(np.float32)
+        
+        self.texture1 = gloo.Texture2D(self.img_array1, interpolation='linear', wrapping='repeat')
+        self.program['u_texture1'] = self.texture1
+        self.texture2 = gloo.Texture2D(self.img_array2, interpolation='linear', wrapping='repeat')
+        self.program['u_texture2'] = self.texture2
+        self.texture3 = gloo.Texture2D(self.img_array3, interpolation='linear', wrapping='repeat')
+        self.program['u_texture3'] = self.texture3
+        self.texture4 = gloo.Texture2D(self.img_array4, interpolation='linear', wrapping='repeat')
+        self.program['u_texture4'] = self.texture4
+        
         self.theta = 0
         self.phi = 0
         self.mouse_press = 0
@@ -273,6 +292,41 @@ class Canvas(app.Canvas):
 
     # --- """Keyboard Controls"""
     def on_key_press(self, event):
+	
+	    print(event.key.name)
+	    self.key_name = event.key.name
+	    # self.program['show_components'] = event.key.name
+	    if event.key.name in "1, 2, 3, 4, 5, 6, 7, 8, 9, 0":
+		    self.zoom_amt = 1
+		    if event.key.name not in "3, 4, 5, 6, 7, 8, 9, 0":
+			    self.program['u_zoom'] = self.zoom_amt
+		    self.mouse_pos = self.mouse_pos_init
+		    self.program['u_mouse_pos'] = self.mouse_pos
+		    self.program['show_components'] = event.key.name
+
+	    if event.key.name == "F":
+		    self.show_fps = not self.show_fps
+		    self.program['show_fps'] = self.show_fps
+		    
+	    if event.key.name == "T":
+		    self.timer_verbose = not self.timer_verbose
+		    self.program['timer_verbose'] = self.timer_verbose
+	 
+	    if event.key.name == "R":
+		    self.re_init(self.canvas_size, self.tex_size)
+		    self.program['u_tex_size'] = self.tex_size
+		    self.program['u_mouse_pos'] = self.mouse_pos
+		    self.program['u_zoom'] = self.zoom_amt
+		    self.program['show_components'] = event.key.name
+		    self.program['show_fps'] = self.show_fps
+		    self.program['timer_verbose'] = self.timer_verbose
+		    self.program['u_tex_size'] = self.tex_size
+		    self.program['u_mouse_pos'] = self.mouse_pos
+		    self.program['u_zoom'] = self.zoom_amt
+		    self.program['show_components'] = event.key.name
+		    self.program['show_fps'] = self.show_fps
+		    self.program['timer_verbose'] = self.timer_verbose
+
         try:
             self.key_name = event.key.name
             if event.key.name in "+, -":
@@ -337,7 +391,7 @@ class Canvas(app.Canvas):
             self.on_timer(event)
 
         self.update_texture()
-        self.texture.set_data(self.rgb_array)
+	
         self.program.draw('triangle_strip')
 
         if self.show_fps:
@@ -353,7 +407,25 @@ class Canvas(app.Canvas):
         # print(type(self.rgb_inject))
         # self.rgb_array[...] = self.rgb_inject.astype(np.float32)
         # self.rgb_array = self.rgb_inject.astype(np.float64)
+        
+        if self.rgb_inject is not np.ndarray:
         self.rgb_array = self.rgb_inject.astype(np.float32)
+			self.texture1.set_data(self.self.rgb_array)
+        else:
+	        self.rgb_array_inject = self.rgb_inject
+	        
+	        self.img_array1 = self.rgb_array_inject[0].astype(np.float32)
+	        self.texture1.set_data(self.img_array1)
+
+	        self.img_array2 = self.rgb_array_inject[1].astype(np.float32)
+            self.texture2.set_data(self.img_array2)
+
+            self.img_array3 = self.rgb_array_inject[2].astype(np.float32)
+            self.texture3.set_data(self.img_array3)
+			
+			self.img_array4 = self.rgb_array_inject[3].astype(np.float32)
+    		self.texture4.set_data(self.img_array4)
+    
 
     # if tex is not None:
     #     self.rgb_array = tex

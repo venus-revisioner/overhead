@@ -14,7 +14,7 @@ from overhead.visualizatioh import Canvas
 
 
 class SomCupy(threading.Thread):
-	def __init__(self, dim=(64 * 2, 64 * 2), max_iter=32 * 1, internal_iters=1, map_radius_scale=1., neighb_pow=3., neighb_diminish_rate=1.,
+	def __init__(self, dim=(64 * 2, 64 * 2), max_iter=8, internal_iters=1, map_radius_scale=1., neighb_pow=3., neighb_diminish_rate=1.,
 	             init_learn_rate=0.94, learn_rate_mode='const', use_ricker=False, use_gauss=True, use_mex_hat=False, mex_hat_w=1., mex_hat_d=3., gauss_mean=0.,
 	             gauss_std=1.
 	             ):
@@ -36,7 +36,7 @@ class SomCupy(threading.Thread):
 		self.use_ricker = use_ricker
 		self.use_gauss = use_gauss
 		
-		self.gauss_mean, self.gauss_std = 0., 1.
+		self.gauss_mean, self.gauss_std = gauss_mean, gauss_std
 		
 		self.in_vector: cp.array = None
 		self.weights: cp.array = cp.random.random((*self.dim, 3)) * 0.5
@@ -386,6 +386,13 @@ class SomCupy(threading.Thread):
 
 
 class SomWorker(SomCupy):
+	"""
+	Worker class for SomCupy
+	Extends SomCupy
+	Example:
+		worker = SomWorker()
+		worker.start_training(some_data, auto_stop=True)
+	"""
 	def __init__(self, *args, **kwargs):
 		SomCupy.__init__(self, *args, **kwargs)
 		self.sc = SomCupy
@@ -398,8 +405,8 @@ class SomWorker(SomCupy):
 		self.predict_all = False
 	
 	def self__dict__(self):
-		d = {'prediction'   : self._prediction, 'predict_all': self.predict_all, 'canvas': self.canvas, 'canvas_sca': self.canvas_sca,
-				'canvas_pos': self.canvas_pos, 'canvas_size': self.canvas_size, }
+		d = {'prediction': self._prediction, 'predict_all': self.predict_all, 'canvas': self.canvas, 'canvas_sca': self.canvas_sca,
+		     'canvas_pos': self.canvas_pos, 'canvas_size': self.canvas_size, }
 		return self.sc.__dict__.update(d)
 	
 	def _train(self, training_pool):
@@ -426,7 +433,9 @@ class SomWorker(SomCupy):
 		# predict all for demo purposes
 		self._predict_all()
 	
-	def start_training(self, array_pool):
+	# self.visualize()
+	
+	def start_training(self, array_pool, auto_stop=False):
 		# allocate training pool
 		self._training_pool = array_pool
 		
@@ -435,7 +444,9 @@ class SomWorker(SomCupy):
 		# self.get_info()
 		
 		# predict all
-		self._predict_all()
+		# self._predict_all()
+		
+		self.visualize(auto_stop=auto_stop)
 	
 	def predict_vector(self, p):
 		self._prediction = self.predict(p)
@@ -444,12 +455,17 @@ class SomWorker(SomCupy):
 		self.canvas.injection(self.get_weights)
 		return location
 	
-	# p = self._training_pool[iter_permute % len(self._training_pool) ]
-	# prediction = self.predict(p)
-	# print(f'PREDICTING {iter_permute}: {p} -- LOCATION: {prediction[ ::-1 ]}')
-	# prediction = None
-	
-	# self._iterate = cp.add(self._iterate, 1) % len(self._in_vector_array)
+	def visualize(self, auto_stop=False):
+		while True:
+			self.canvas.injection(self.get_weights)
+			if not auto_stop:
+				if self.canvas._closed:
+					self.stop()
+					break
+			else:
+				if self.iter_complete:
+					break
+			time.sleep(1 / 30)
 	
 	def _predict_all(self):
 		"""
@@ -474,21 +490,21 @@ class SomWorker(SomCupy):
 					prediction = self.predict(p)
 					print(f'PREDICTING {iter_permute}: {p} -- LOCATION: {prediction[::-1]}')
 					prediction = None
-
+					
 					iter_permute += 1
-
+				
 				if iter_permute == len(self._training_pool):
 					print_boxed("PREDICTION COMPLETED")
 					print("PRESS ESC TO EXIT...")
 					iter_permute += 1
-
+			
 			else:
 				self.canvas.stop = True
 				self.canvas._closed = True
 				self.canvas.quit()
 				self.stop()
 				break
-
+			
 			self.canvas.injection(self.get_weights)
 			iter_counter += 1
 	
@@ -503,4 +519,4 @@ class SomWorker(SomCupy):
 		self.weights += (cp.random.uniform(-0.0005, 0.0005, self.weights.shape))
 		self.iterate(self)
 
-# SomWorker().demo_rgb(color_amt=5)
+

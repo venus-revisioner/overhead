@@ -3,18 +3,13 @@
 # Path: overhead\cryptooh\apps.py
 # Compare this snippet from overhead\__init__.py:
 
-from setuptools import setuptools, setup, find_packages
-packages = setuptools.find_packages(),
-packages = setuptools.find_packages(exclude=['tests']),
-packages = setuptools.find_packages(exclude=['tests', 'tests.*']),
-packages = setuptools.find_packages(exclude=['tests', 'tests.*', 'tests.*.*']),
-packages = setuptools.find_packages(exclude=['tests', 'tests.*', 'tests.*.*', 'tests.*.*.*']),
-
-
+from setuptools import setup, find_packages
+packages = find_packages(),
 
 package_data = {
 	'overhead': ['README.rst', 'LICENSE'],
 }
+
 setup(name             = "overhead",
       version          = "0.6.9",
       author           = "venus-revisioner",
@@ -68,7 +63,7 @@ setup(name             = "overhead",
 
 
 
-#
+
 # setup()
 
 # Path: overhead\overhead\__init__.py
