@@ -14,9 +14,8 @@ from overhead.visualizatioh import Canvas
 
 
 class SomCupy(threading.Thread):
-	def __init__(self, dim=(64 * 2, 64 * 2), max_iter=8, internal_iters=1, map_radius_scale=1., neighb_pow=3., neighb_diminish_rate=1.,
-	             init_learn_rate=0.94, learn_rate_mode='const', use_ricker=False, use_gauss=True, use_mex_hat=False, mex_hat_w=1., mex_hat_d=3., gauss_mean=0.,
-	             gauss_std=1.
+	def __init__(self, dim=(64 * 2, 64 * 2), max_iter=8, internal_iters=1, map_radius_scale=1., neighb_pow=3., neighb_diminish_rate=1., init_learn_rate=0.94,
+	             learn_rate_mode='const', use_ricker=False, use_gauss=True, use_mex_hat=False, mex_hat_w=1., mex_hat_d=3., gauss_mean=0., gauss_std=1.
 	             ):
 		
 		threading.Thread.__init__(self)
@@ -393,10 +392,11 @@ class SomWorker(SomCupy):
 		worker = SomWorker()
 		worker.start_training(some_data, auto_stop=True)
 	"""
+	
 	def __init__(self, *args, **kwargs):
 		SomCupy.__init__(self, *args, **kwargs)
 		self.sc = SomCupy
-		self.canvas = Canvas(tex_size=self.dim, canvas_sca=0.85)
+		self.canvas = Canvas(tex_size=self.dim, canvas_sca=0.85, glsl="color_hsv_analysis_split.glsl")
 		self.canvas.texture.interpolation = "nearest"
 		self._training_pool = None
 		self._iter_permute = 0

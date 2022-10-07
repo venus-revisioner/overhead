@@ -1,5 +1,4 @@
 
-
 def cut(in_string, start, end):
 	start = str (start)
 	end = str (end)
@@ -23,26 +22,33 @@ def cut(in_string, start, end):
 
 def file_to_string(filename, verbose=0):
 	file_data = ""
-	with open(filename, buffering=0) as f1:
-		for line in lines:
-			lines = f1.readlines()
-		# for line in f1.split():
-			a = line.strip()
-			# if a != "" and a.startswith(("//", "\n")) is False:
-			file_data += a + "\n"
-
+	with open(filename) as f1:
+		for lines in f1:
+			file_data += lines
+	# for line in lines:
+	# 	lines = f1.readlines()
+	# # for line in f1.split():
+	# 	a = line.strip()
+	# 	# if a != "" and a.startswith(("//", "\n")) is False:
+	# 	file_data += a + "\n"
+	
 	# if verbose: print(file_data)
 	return file_data
 
 
 def slice_glsl(in_file=None, start="#if COMPILING_VS", end="#else if COMPILING_FS"):
 	"""Outputs tuple: VERTEX and FRAGMENT shader code"""
-	version = ""
+	# version = ""
 	# version = "#version 120"
-	# version = "#version 410"
+	version = "#version 410"
+	shader_source = file_to_string(in_file)
 	# vert_source = version + "\n" + cut(SOURCE, start, end)
-	vert_source = version + "\n" + cut(SOURCE, start, end)
-	frag_source = cut(SOURCE, end, "")
+	# frag_source = cut(SOURCE, end, "")
+	vert_source = version + "\n" + cut(shader_source, start, end)
+	frag_source = cut(shader_source, end, "")
+	
+	# vert_source = version + "\n" + cut(SOURCE, start, end)
+	# frag_source = cut(SOURCE, end, "")
 	return vert_source, frag_source
 
 

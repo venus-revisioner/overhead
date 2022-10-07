@@ -1178,12 +1178,43 @@ class FileManager:
 
 	def print_folder_info(self):
 		print_boxed(f'Folder {self.folder} contains {len(self.file_dict)} files')
-		
-	def batch_rename(self, new_name):
+	
+	def batch_rename(self, new_name, ext_filter="", new_folder="./renamed"):
 		for f in self.files:
+			# add leading zeros to file name if needed
+			idx = ""
+			if len(self.files) > 9:
+				leading_zeros = len(str(len(self.files)))
+				idx = str(f).zfill(leading_zeros)
+			else:
+				idx = str(f)
 			ext = Path(self.files[f]).suffix.__str__()
-			new = f'{new_name}_{f}{ext}'
-			self.move_file(self.files_full_path[f], "./new", new)
+			# create new file name
+			new = f'{new_name}_{idx}{ext}'
+			if ext_filter in self.files[f]:
+				print("Renaming", self.files[f], "to", new)
+				if not (not (new_folder is None) and not (new_folder == "") and not (new_folder is False)):
+					new_folder = Path(self.files_full_path[f]).parent.__str__()
+				try:
+					self.move_file(self.files_full_path[f], new_folder, new)
+				except Exception as e:
+					print("\nError renaming file!")
+					print(e)
+	
+	def delete_file(self, file):
+		if Path(file).exists():
+			Path(file).unlink()
+			print(f'DELETED {file}')
+		else:
+			print(f'FILE NOT FOUND {file}')
+	
+	def delete_files(self, ext_filter=None):
+		for f in self.files:
+			if ext_filter is not None and ext_filter in self.files[f]:
+				self.delete_file(self.files_full_path[f])
+			else:
+				print(f'NOT DELETED {self.files[f]}')
+				print(f'EXTENSION {ext_filter} NOT FOUND IN FILE NAME')
 
 
 class TextFileIterator:

@@ -1,4 +1,4 @@
-#version 120
+#version 410
 
 #if COMPILING_VS
 
@@ -7,6 +7,7 @@ uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_projection;
 uniform float u_antialias;
+
 
 // Attributes
 attribute vec2 a_position;
