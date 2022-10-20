@@ -11,7 +11,7 @@ package_data = {
 }
 
 setup(name             = "overhead",
-      version          = "0.7,0",
+      version          = "0.7.1",
       author           = "venus-revisioner",
       author_email     = "johan.uhd@gmail.com",
       url              = "https://github.com/venus-revisioner/overhead.git",
