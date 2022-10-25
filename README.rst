@@ -1,9 +1,26 @@
 overhead-0.7.1
 Title: overhead
 Version: 0.7.1
-Date: 2022-10-03
+Date: 2022-10-20
 
-Description: A simple, lightweight, and fast overhead for me.
-My _overhead_ tools of mixed-bag-distribution, self-organized, self-build.
+Description: A simple, lightweight, and fast-to-use-swiss-tools for me.
+Overhead tools are a mixed-bag distribution, self-organized, self-build.
 Used in many many projects as helper packages, functions and Classes.
+File management, string manipulation, data manipulation, gpu-accelerated
+machine learning, decorators, and more.
+
+Build (a note to myself):
+pip install .
+pip install --upgrade .
+python -m pip wheel -e .
+
+Install:
+pip install -f git+https://github.com/venus-revisioner/overhead.git
+... then head to site-packages and install pip install -r requirements.txt
+
+Usage:
+import overhead
+
+from overhead.videooh import stream_webcam()
+stream_webcam()
 
