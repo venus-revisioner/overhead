@@ -1,7 +1,7 @@
 import os
 import re
 
-from dictoh import sort_dictionary
+from overhead.dictoh import sort_dictionary
 
 
 def read_txt_file(file_name):
