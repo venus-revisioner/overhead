@@ -88,7 +88,6 @@ class SpeechQuery:
 		self.talkback = SpeechToText()
 		self.voiceover = TextToSpeech(rate=180)
 
-
 	def ask_me(self, say):
 		self.voiceover.say(text=str(say), subtitles=1)
 		action = None

@@ -9,12 +9,12 @@ from overhead.toolboxoh import text_to_file, log_time
 
 
 class InetAccessToggle:
-	def __init__(self, adapter_name='Ethernet'):
-		Terminal().resize()
-		self.adapter_name = adapter_name
-	
-	def enable(self):
-		os.system(f'netsh interface set interface name={self.adapter_name} admin=ENABLED')
+    def __init__(self, adapter_name='Ethernet'):
+        Terminal().resize()
+        self.adapter_name = adapter_name
+
+    def enable(self):
+        os.system(f'netsh interface set interface name={self.adapter_name} admin=ENABLED')
 
     def disable(self):
         os.system(f'netsh interface set interface name={self.adapter_name} admin=DISABLED')
@@ -28,6 +28,7 @@ class InetAccessToggle:
         print(f'ENABLING "{adapter_name}"...')
         self.enable()
         time.sleep(1)
+
 
 class MyIP:
     def __init__(self, log_path=None):
