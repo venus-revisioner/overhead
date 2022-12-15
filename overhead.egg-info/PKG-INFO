@@ -1,19 +1,19 @@
 Metadata-Version: 2.1
 Name: overhead
-Version: 0.7.2
+Version: 0.7.7
 Summary: My package description
 Home-page: https://github.com/venus-revisioner/overhead.git
 Author: venus-revisioner
 Author-email: johan.uhd@gmail.com
 License: LICENSE
-Keywords: one,two
+Keywords: toolbox,snippets
 Classifier: Framework :: Python
 Classifier: Programming Language :: Python :: 3
 Requires-Python: >=3.10
 Description-Content-Type: text/x-rst
 License-File: LICENSE
 
-overhead-0.7.2
+    overhead-0.7.2
 Title: overhead
 Version: 0.7.2
 Date: 2022-11-23
@@ -38,4 +38,3 @@ import overhead
 
 from overhead.videooh import stream_webcam()
 stream_webcam()
-

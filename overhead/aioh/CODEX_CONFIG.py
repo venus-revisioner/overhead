@@ -76,7 +76,7 @@ class Characteristics:
 	                 "and accepted. AI is also somewhat conscious of itself, and a bit sarcastic. AI has an academic" \
 	                 "background and very strict upbringing.\n\n"
 
-	chatbot_super: str = "AI is state-of-the art chatbot. Chatbots are used in dialog systems for various purposes" \
+	chatbot_wikipedia: str = "AI is state-of-the art chatbot. Chatbots are used in dialog systems for various purposes" \
 	                "including customer service, request routing, or information gathering. While some chatbot " \
 	                "applications use extensive word-classification processes, natural language processors, " \
 	                "and sophisticated AI, others simply scan for general keywords and generate responses " \

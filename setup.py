@@ -3,23 +3,25 @@
 # Path: overhead\cryptooh\apps.py
 # Compare this snippet from overhead\__init__.py:
 
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+
 packages = find_packages(),
 
 package_data = {
 	'overhead': ['README.rst', 'LICENSE'],
 }
 
-setup(name             = "overhead",
-      version          = "0.7.1",
-      author           = "venus-revisioner",
-      author_email     = "johan.uhd@gmail.com",
-      url              = "https://github.com/venus-revisioner/overhead.git",
-      description      = "'Overhead' tools of mixed-bag-distribution, self-organized.",
-      readme 	       = "README.rst",
-      license   	   =  "LICENSE",
-      long_description = "'TL;DR'",
-      py_modules       = ["overhead.aioh", "overhead.cryptooh", "overhead.opengloh"],
+setup(name="overhead",
+      version="0.7.7",
+      author="venus-revisioner",
+      author_email="johan.uhd@gmail.com",
+      url="https://github.com/venus-revisioner/overhead.git",
+      description="'Overhead' tools of mixed-bag-distribution, self-organized.",
+      readme="README.rst",
+      license="LICENSE",
+      long_description="'TL;DR'",
+      py_modules=["overhead.aioh", "overhead.cryptooh", "overhead.opengloh", "overhead.datascience_tools"],
       include_package_data=True,
       zip_safe=False
       )
@@ -101,4 +103,3 @@ setup(name             = "overhead",
 # python setup.py test --test-suite=tests.test_suite
 # python setup.py test --test-suite=tests.test_suite --test-runner=unittest.TextTestRunner
 # python setup.py test --test-suite=tests.test_suite --test-runner=unittest.TextTestRunner --test-args="--verbose"
-
