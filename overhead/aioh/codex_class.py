@@ -36,7 +36,9 @@ class CodexClass:
         self.out_file = None
         self.out_file_continued = "codex_class_output.txt"
         self.out_file_path = f'{self.current_path}\\{self.out_file}'
-        self.del_chars_alphanum = q
+        self.del_chars_alphanum = "!@#$%^&*()_+{}|:\"<>?`~[]\;',./-= "  # remove non-alphanumeric characters
+        self.del_chars_smaller = ["\n", "\t", "\r"]  # remove smaller characters
+    
         self.del_chars_smaller = "#$&\'/_()*+:;<=>[]^`{|}~'" + '"'
 
     # self.del_char_smaller = "'\'"

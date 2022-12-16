@@ -1,4 +1,10 @@
+from __future__ import annotations
+
+from typing import Any
+from typing import Dict
 from typing import Literal
+from typing import Tuple
+
 from codex_chat_helpers import ChatHelpers
 from codex_class import CodexSmall
 
@@ -6,11 +12,8 @@ from codex_class import CodexSmall
 class ChatBotsTalking:
     def __init__(self, starter=None, definition=None, continuous_save=True, overwrite=False, load=None) -> None:
 
-        self.command_list: tuple[Literal['help'], Literal['info'], Literal['commands'], Literal['stats'],
-        Literal['debug'], Literal['set_definition'], Literal['get_definition'], Literal['parameters'],
-        Literal['/exit'], Literal['/start'], Literal['/stop'], Literal['/pause']] \
-            = ('help', 'info', 'commands', 'stats', 'debug',
-                             'set_definition', 'get_definition', 'parameters',
+        self.command_list = ('/help', '/info', '/commands', '/stats', '/debug',
+                             '/set_definition', '/get_definition', '/parameters',
                              '/exit', '/start', '/stop', '/pause')
 
         self.bot1 = None
@@ -23,7 +26,7 @@ class ChatBotsTalking:
         self.overwrite = overwrite
         self.continuous_save: bool = continuous_save
         self.load_file = load
-        self.helper: ChatHelpers = ChatHelpers(starter, definition, continuous_save, overwrite, load)
+        self.helper = ChatHelpers(starter, definition, continuous_save, overwrite, load)
         self.bot1_name: Literal['bot1'] = "bot1"
         self.bot2_name: Literal['bot2'] = "bot2"
 
@@ -44,7 +47,7 @@ class ChatBotsTalking:
         self.helper.chat_init_string(self.starter, self.definition, self.subject_1_name, self.subject_2_name)
 
         # create a chatbot
-        self.bot1: CodexSmall = CodexSmall(engine="code-davinci-002", temperature=0.994, max_tokens=64, top_p=1,
+        self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.994, max_tokens=64, top_p=1,
                                stop_str="\n", frequency_penalty=0.2, presence_penalty=0.1)
 
         # --------------------------------------------------------------------#
@@ -56,8 +59,8 @@ class ChatBotsTalking:
             user_name = update.message.from_user["first_name"]
         if update.message.from_user["last_name"] is not None:
             user_name += " " + update.message.from_user["last_name"]
-        user_name = update.message.chat[''] + f'{ update.message["message_id"]}: ' + update.message.from_user[
-            "first_name"] + " " + update.message.from_user["last_name"]
+        user_name = update.message.chat['date'] + update.message["message_id"] + update.message.from_user[
+	        "first_name"] + " " + user_name
         print(f'{user_name}: {user_comment}')
         self.helper.make_bot_comment(user_comment, str(user_name), end="\n", save_to_file=True, verbose=False)
         self.helper.paragraph_popper()
@@ -73,10 +76,9 @@ class ChatBotsTalking:
     # --------------------------------------------------------------------#
 
 
-    def options(self, comment=None) -> str:
+    def options(self, comment=None) -> str | tuple[dict[str, str], str] | dict[str, str] | Any:
 
         # truth_command = [comment == command for command in self.command_list]
-        #
         # if any(truth_command):
 
         if comment == "commands":
@@ -122,7 +124,7 @@ class ChatBotsTalking:
         print(f'Available commands: {self.command_list}')
 
     def parameters(self, bot) -> str:
-        bot: CodexSmall = self.bot1
+        bot = self.bot1
         t = bot.__dict__['temperature']
         max_tokens = bot.__dict__['max_tokens']
         freq_pen = bot.__dict__['frequency_penalty']

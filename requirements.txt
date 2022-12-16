@@ -1,25 +1,43 @@
-openai~=0.23.1
-dataclasses~=0.6
-cupy~=11.1.0
-numpy~=1.23.3
-keras~=2.10.0
-tensorflow~=2.10.0
-tensorflow-gpu~=2.10.0
-Pillow~=9.2.0
-overhead~=0.7.1
-websocket-client~=1.4.1
-binance~=0.3
-requests~=2.28.1
-opencv-python~=4.6.0.66
-matplotlib~=3.6.0
-screeninfo~=0.8.1
-vispy~=0.11.0
-setuptools~=65.3.0
-torch==1.13.0+cu117 -f  https://download.pytorch.org/whl/torch/
-torchvision==0.14.0+cu117 -f  https://download.pytorch.org/whl/torchvision/
-torchaudio==0.13.0+cu117 -f  https://download.pytorch.org/whl/torchaudio/
-pandas~=1.4.4
-speechrecognition~=3.9.0
-torch~=1.13.0+cu117
-torchvision~=0.14.0+cu117
-aiohttp~=3.6.2
+# here is a list of required packages, increasing
+# in complexity in the middle, and some dust at the end,
+# also a link to my github repo.
+
+setuptools
+requests
+pyttsx3
+websocket_client
+matplotlib
+pyopengl
+pyopengl-accelerate
+PyQt5
+openai
+dataclasses
+cupy
+numpy
+keras
+tensorflow
+tensorflow-gpu
+Pillow
+opencv-python
+pyttsx3
+pyttsx3[pywin32]
+
+
+torch==1.13.1+cu117 -f  https://download.pytorch.org/whl/torch/
+torchvision==0.14.1+cu117 -f  https://download.pytorch.org/whl/torchvision/
+torchaudio==0.13.1+cu117 -f  https://download.pytorch.org/whl/torchaudio/
+
+colorama
+screeninfo
+stopwords
+nltk
+tqdm
+pydub
+pyaudio
+pywin32
+pywin32-ctypes
+
+# my full library of helper functions, growing in
+# modularity every day almost...
+
+# -e https://github.com/venus-revisioner/overhead-0.6.6.git

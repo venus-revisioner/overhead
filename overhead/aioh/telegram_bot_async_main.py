@@ -9,10 +9,13 @@ This program is dedicated to the public domain under the CC0 license.
 
 import asyncio
 import logging
+import os
+import pathlib
+from pathlib import Path
 import random
 import time
 import typing
-from pprint import pprint
+
 from typing import NoReturn
 
 import telegram.constants
@@ -50,14 +53,63 @@ chatbot.bot2human_async()
 id_counter = 0
 update_id_mem = 0
 
-_TOKEN_KERTTULIBOT = os.getenv('TELEGRAM_BOT)'.strip("'")
-TOKEN = _TOKEN_KERTTULIBOT
+# need path to the token file in user PATH VAR
+
+async def main() -> NoReturn:
+	
+	global id_counter
+	global update_id_mem
+	global chatbot
+	# Create the EventHandler and pass it your bot's token
+	bot = Bot(os.environ["TELEGRAM_BOT_TOKEN"])
+	
+	# get the first pending update_id, this is so we can skip over it in case
+	# we get a "Forbidden" exception.
+	try:
+		update_id = bot.get_updates()[0].update_id
+		update_id += 1
+	except IndexError:
+		update_id = None
+		
+	logger.info("listening for new messages...")
+	
+	while True:
+		try:
+			update_id = echo(bot, update_id)
+		except NetworkError:
+			time.sleep(1)
+		except Forbidden:
+			# The user has removed or blocked the bot.
+			update_id += 1
+			
+if __name__ == "__main__":
+	asyncio.run(main())
+	
+	
+async def echo(bot: Bot, update_id: typing.Optional[int]) -> int:
+    """Echo the message the user sent."""
+    global id_counter
+    global update_id_mem
+    global chatbot
+    # Request updates after the last update_id
+    for update in await bot.get_updates(offset=update_id, timeout=10):
+        zippupdate_id = update.update_id + 1
+
+        if update.message:  # your bot can receive updates without messages
+            # Reply to the message
+            if update.message.text:
+                if update.message.text == "/start":
+                    await update.message.reply_text("Hi!")
+                else:
+                    await update.message.reply_text(update.message.text)
+            else:
+                await update.message.reply_text("I don't understand you.")
+    return update_id
 
 
 async def main() -> NoReturn:
     """Run the bot."""
     # Create the EventHandler and pass it your bot's token.
-
     # Here we use the `async with` syntax to properly initialize and shutdown resources.
     async with Bot(TOKEN) as bot:
         # get the first pending update_id, this is so we can skip over it in case
