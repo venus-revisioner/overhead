@@ -3,6 +3,7 @@ import time
 
 import openai
 import overhead.stringoh
+from overhead.aioh.codex_chat_helpers import ChatHelpers
 
 
 def import_file(filepath):
