@@ -89,6 +89,10 @@ class ChatHelpers:
 		return f'{r} {p} {w}'
 		# print("*" * 72)
 	
+
+	def chat_add_string(self, s) -> None:
+		self.conversation += s
+	
 	def add_to_conversation(self, s="", end="\n") -> None:
 		if self.conversation_round == 0:
 			self.set_conversation(self.conversation)

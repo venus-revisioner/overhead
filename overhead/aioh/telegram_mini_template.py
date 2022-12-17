@@ -30,7 +30,7 @@ chatbot.subject_1_name = "kerttulibot"
 chatbot.subject_2_name = "group_chat"
 chatbot.bot2human_async()
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 
 
 _key_path = "D:\\OVERHEAD_PY\\TOKEN_KERTTULIBOT.txt"

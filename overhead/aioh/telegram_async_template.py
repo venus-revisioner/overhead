@@ -111,7 +111,7 @@ async def echo(bot: Bot, update_id: typing.Optional[int]) -> int:
 			# and we save the conversation
 			# and we update the update_id
 			chatbot.add_conversation(update.message.text)
-			bot.send_message(chat_id=update.message.chat_id, text=chatbot.reply())
+			bot.send_message(chat_id=update.message.chat_id, text=chatbot.reply(), disable_notification=True)
 			chatbot.save_conversation()
 			update_id = zipupdate_id
 			return update_id
@@ -138,6 +138,7 @@ async def main_chatter() -> typing.NoReturn:
 	# THERE IS NO DISPATCHER IN TELEGRAM.AIO
 	# FIND A REPLACEMENT FOR IT !!!!
 	
+			update.message.reply_text(update.message.text, disable_notification=True)
 		# bot listens for users leaving or logging in to the chatroom
 		if update.message.left_chat_member is not None:
 			chatbot.subject_2_name = update.message.left_chat_member.username
@@ -165,14 +166,14 @@ async def main_chatter() -> typing.NoReturn:
 		# Reply to the message
 			if update.message.text:
 				if update.message.text == "/start":
-					await update.message.reply_text("Hi!")
+					await update.message.reply_text("Hi!", disable_notification=True)
 				else:
-					await update.message.reply_text(update.message.text)
+					await update.message.reply_text(update.message.text, disable_notification=True)
 					chatbot.subject_1_input = update.message.text
 					chatbot.subject_2_input = update.message.text
 					chatbot.human2bot_async()
-				await update.message.reply_text(chatbot.subject_1_output)
-				await update.message.reply_text(chatbot.subject_2_output)
+				await update.message.reply_text(chatbot.subject_1_output, disable_notification=True)
+				await update.message.reply_text(chatbot.subject_2_output, disable_notification=True)
 				chatbot.helper.save_conversation_file("kerttulibot_chatroom_1.txt")
 			# Reply to the message
 			update.message.reply_text(update.message.text)
@@ -267,7 +268,7 @@ def main_async(update: Update, update_id: typing.Optional[int]) -> int:
 
 async def main() -> NoReturn:
 	# Create the EventHandler and pass it your bot's token
-	bot = Bot(os.environ["TELEGRAM_BOT_TOKEN"])
+	while True:
 	
 	# get the first pending update_id, this is so we can skip over it in case
 	# we get a "Forbidden" exception.
@@ -276,17 +277,19 @@ async def main() -> NoReturn:
 		update_id += 1
 	except IndexError:
 		update_id = None
+		update_id += 1
 	
+	time.sleep(2)
 	logger.info("listening for new messages...")
 	
-	while True:
-		try:
-			update_id = await echo(bot, update_id)
-		except NetworkError:
-			time.sleep(1)
-		except Forbidden:
-			# The user has removed or blocked the bot.
-			update_id += 1
+	if update_id:
+		update_id = await echo(bot, update_id)
+	except NetworkError:
+	time.sleep(1)
+
+	except Forbidden:
+	# The user has removed or blocked the bot.
+	update_id += 1
 
 
 if __name__ == "__main__":
