@@ -47,8 +47,8 @@ class ChatBotsTalking:
 		self.helper.chat_init_string(self.starter, self.definition, self.subject_1_name, self.subject_2_name)
 
 		# create a chatbot
-		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.994, max_tokens=64, top_p=1,
-							   stop_str="\n", frequency_penalty=0.2, presence_penalty=0.1)
+		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.996, max_tokens=512, top_p=1,
+							   stop_str="\n\n\n", frequency_penalty=0.3, presence_penalty=0.05)
 
 		# --------------------------------------------------------------------#
 	def wait_user_input(self, update) -> None:

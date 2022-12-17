@@ -144,7 +144,7 @@ async def echo(bot: Bot, update_id: int) -> int:
 				# time.sleep(2)
 				await update.message.reply_text(c, allow_sending_without_reply=True)
 				logger.info("Sent message %s!", c)
-				return next_update_id + 1
+				return next_update_id
 			
 			if "/start" in update.message.text and chatbot.pause_flag:
 				c = chatbot.options(comment=update.message.text)
@@ -152,7 +152,7 @@ async def echo(bot: Bot, update_id: int) -> int:
 				await update.message.reply_text(c, allow_sending_without_reply=True)
 				logger.info("Sent message %s!", c)
 				chatbot.pause_flag = False
-				return next_update_id + 1
+				return next_update_id
 			
 			if update.message.text in ("/stop", "/pause") and not chatbot.pause_flag:
 				c = chatbot.options(comment=update.message.text)
@@ -160,7 +160,8 @@ async def echo(bot: Bot, update_id: int) -> int:
 				await update.message.reply_text(c, allow_sending_without_reply=True)
 				logger.info("Sent message %s!", c)
 				chatbot.pause_flag = True
-				return next_update_id + 1
+				return next_update_id
+				brea
 			
 			# prob = [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3]
 			prob = [1, 1, 1, 1, 1, 1, 1]
@@ -176,14 +177,31 @@ async def echo(bot: Bot, update_id: int) -> int:
 					if "groups" in update.message.text and update.message:
 						member = telegram.ChatMember(update.message.chat_id, update.message.from_user.id)
 						chatbot.helper.conversation += f"\n{member}\n"
+						return next_update_id
 					elif update.message.text is not None:
 						answer = chatbot.answer_user_input(update)
 						if "@" in answer:
 							await update.message.reply_text(answer)
+							return next_update_id
 						else:
 							await bot.send_message(chat_id=update.message.chat_id, text=answer)
-			return next_update_id
-		return next_update_id
+						logger.info("Sent message %s!",answer)
+						return next_update_id
+						
+						# how to prevent looping?
+						if answer in chatbot.command_list and next_update_id is update.update_id:
+							rint(str(update_id.user_data))
+							self.helper.conversation += f"\n{str(update_id.user_data)}\n"
+
+
+						c = chatbot.options(comment=answer)+ f'{kerttulibot}: self.helper.conversation += f"\n{str(update_id.user_data)}\n"'
+						time.sleep(2)
+						await update.message.reply_text(c, allow_sending_without_reply=True)
+						logger.info("Sent message %s!", c)
+						return next_update_id + 1
+					
+			return next_update_id + 1
+		return next_update_id +1
 	return update_id
 
 

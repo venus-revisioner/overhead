@@ -30,7 +30,7 @@ class ChatHelpers:
 		self.timestamp = timestamp
 		self.subject_1_name = "bot1"
 		self.subject_2_name = "bot2"
-		self.limit_paragraph = 150
+		self.limit_paragraph = 50
 		self.definitions = {}
 		self.definition = None
 		self.info_dict = {}
