@@ -45,11 +45,12 @@ class ChatBotsTalking:
 		self.helper.subject_2_name = self.subject_2_name
 
 		self.helper.chat_init_string(self.starter, self.definition, self.subject_1_name, self.subject_2_name)
-
+		self.helper.limit_paragraph = 100
+		
 		# create a chatbot
-		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.996, max_tokens=512, top_p=1,
-							   stop_str="\n\n\n", frequency_penalty=0.3, presence_penalty=0.05)
-
+		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.593, max_tokens=256, top_p=1,
+							   stop_str="\n\n", frequency_penalty=0.3, presence_penalty=0.2)
+		
 		# --------------------------------------------------------------------#
 	def wait_user_input(self, update) -> None:
 		# if update.message and update.message.text:

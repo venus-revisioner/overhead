@@ -10,7 +10,6 @@ This program is dedicated to the public domain under the CC0 license.
 import asyncio
 import logging
 import os
-import pathlib
 from pathlib import Path
 import random
 import time
@@ -22,6 +21,7 @@ import telegram.constants
 from telegram import Bot
 from telegram.error import Forbidden, NetworkError
 
+from overhead.decooh import threaded_deco
 # from telegram import __version__ as TG_VER
 from telegram_kerttulibot import ChatBotsTalking
 from _telegram_bots import _kerttulibot
@@ -74,23 +74,37 @@ async def echo(bot: Bot, update_id: typing.Optional[int]) -> int:
 				await update.message.reply_text("I don't understand you.")
 	return update_id
 
+bot = Bot(_kerttulibot.TOKEN)
 
-# kerttulibot = os.path.join(Path(__file__).parent, "kerttulibot_token.txt")
-# print(kerttulibot)
-# TOKEN = TOKEN_KERTTULIBOT
-
+# @threaded_deco
+await def injection():
+	"""Start the bot."""
+	# while True:
+	up = await bot.get_updates()
+	print(up)
+	print(up.data)
+	time.sleep(1)
+	async injection()
 
 async def main() -> NoReturn:
 	"""Run the bot."""
 	# Create the EventHandler and pass it your bot's token.
 	# Here we use the `async with` syntax to properly initialize and shutdown resources.
-
-	async with Bot(_kerttulibot.TOKEN) as bot:
+	injection()
+	async with bot:
+		
+		me = await bot.get_me()
+		print(me)
+		#
+		# await bot.set_webhook(_kerttulibot.WEBHOOK_URL)
+		
+		
 		# get the first pending update_id, this is so we can skip over it in case
 		# we get a "Forbidden" exception.
 		try:
-			update_id = (await bot.get_updates())[0].update_id
+			update_id = (await bot.get_updates())[1].update_id
 			update_id += 1
+		
 		except IndexError:
 			update_id = None
 		
@@ -136,72 +150,72 @@ async def echo(bot: Bot, update_id: int) -> int:
 			# Reply to the message
 			
 			# await update.message.text
-			chatbot.wait_user_input(update)
 			logger.info("Found message %s!", update.message.text)
+			chatbot.wait_user_input(update)
 			
-			if update.message.text in chatbot.command_list:
-				c = chatbot.options(comment=update.message.text)
-				# time.sleep(2)
-				await update.message.reply_text(c, allow_sending_without_reply=True)
-				logger.info("Sent message %s!", c)
-				return next_update_id
+			# if update.message.text in chatbot.command_list:
+			# 	c = chatbot.options(comment=update.message.text)
+			# 	# time.sleep(2)
+			# 	await update.message.reply_text(c, allow_sending_without_reply=True)
+			# 	logger.info("Sent message %s!", c)
+			# 	return next_update_id
+			#
+			# if "/start" in update.message.text and chatbot.pause_flag:
+			# 	c = chatbot.options(comment=update.message.text)
+			# 	# time.sleep(2)
+			# 	await update.message.reply_text(c, allow_sending_without_reply=True)
+			# 	logger.info("Sent message %s!", c)
+			# 	chatbot.pause_flag = False
+			# 	return next_update_id
 			
-			if "/start" in update.message.text and chatbot.pause_flag:
-				c = chatbot.options(comment=update.message.text)
-				# time.sleep(2)
-				await update.message.reply_text(c, allow_sending_without_reply=True)
-				logger.info("Sent message %s!", c)
-				chatbot.pause_flag = False
-				return next_update_id
-			
-			if update.message.text in ("/stop", "/pause") and not chatbot.pause_flag:
-				c = chatbot.options(comment=update.message.text)
-				time.sleep(2)
-				await update.message.reply_text(c, allow_sending_without_reply=True)
-				logger.info("Sent message %s!", c)
-				chatbot.pause_flag = True
-				return next_update_id
-				brea
-			
+			# if update.message.text in ("/stop", "/pause") and not chatbot.pause_flag:
+			# 	c = chatbot.options(comment=update.message.text)
+			# 	time.sleep(2)
+			# 	user_msg = await update.message.reply_text(c, allow_sending_without_reply=True)
+			# 	logger.info("Sent message %s!", c)
+			# 	chatbot.pause_flag = True
+			# 	return next_update_id
+			#
 			# prob = [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3]
-			prob = [1, 1, 1, 1, 1, 1, 1]
-			n = random.choice(prob)
-			print("choice: ", n)
+			# prob = [1, 1, 1, 1, 1, 1, 1]
+			# n = random.choice(prob)
+			# print("choice: ", n)
 			
-			if (n == 0 or chatbot.pause_flag is True) and ("@kerttulibot" not in update.message.text):
-				return next_update_id
-				break
-			else:
-				for i in range(n):
-					time.sleep(10 / n)
-					if "groups" in update.message.text and update.message:
-						member = telegram.ChatMember(update.message.chat_id, update.message.from_user.id)
-						chatbot.helper.conversation += f"\n{member}\n"
-						return next_update_id
-					elif update.message.text is not None:
-						answer = chatbot.answer_user_input(update)
-						if "@" in answer:
-							await update.message.reply_text(answer)
-							return next_update_id
-						else:
-							await bot.send_message(chat_id=update.message.chat_id, text=answer)
-						logger.info("Sent message %s!",answer)
-						return next_update_id
-						
-						# how to prevent looping?
-						if answer in chatbot.command_list and next_update_id is update.update_id:
-							rint(str(update_id.user_data))
-							self.helper.conversation += f"\n{str(update_id.user_data)}\n"
+			# if (n == 0 or chatbot.pause_flag is True) and ("@kerttulibot" not in update.message.text):
+			# 	return next_update_id
+			# else:
+			# 	for i in range(n):
+			# 		time.sleep(10 / n)
+
+			id_dict = {"up_id": update_id, "next_up_id": next_update_id}
 
 
-						c = chatbot.options(comment=answer)+ f'{kerttulibot}: self.helper.conversation += f"\n{str(update_id.user_data)}\n"'
-						time.sleep(2)
-						await update.message.reply_text(c, allow_sending_without_reply=True)
-						logger.info("Sent message %s!", c)
-						return next_update_id + 1
-					
-			return next_update_id + 1
-		return next_update_id +1
+			if update.message.text is not None and next_update_id == update_id:
+				answer = chatbot.answer_user_input(update)
+				
+				# how to prevent looping?
+				if answer is not None and next_update_id == update_id + 1:
+					print("UPDATE ID: ", update_id)
+					print("NEXT UPDATE ID: ", next_update_id)
+					print("CHAT ID: ", update.message.chat_id)
+					print("FROM USER ID: ", update.message.chat.bio)
+					sender_chat = f"\n{str(update.message.sender_chat)}"
+					chat_info = f"\n{str(bot.get_chat(chat_id=update.message.chat_id))}"
+					get_updates = f"\n{str(bot.get_updates(offset=1, limit=100, timeout=5))}"
+
+					# c = chatbot.options(comment=answer)+ f'{kerttulibot}: self.helper.conversation += f"\n{str(update_id.user_data)}\n"'
+					time.sleep(2)
+				if "@" in answer:
+					await update.message.reply_text(answer, allow_sending_without_reply=True)
+					logger.info("Sent reply %s",answer)
+					return next_update_id
+				else:
+					await bot.send_message(chat_id=update.message.chat_id, text=answer)
+					logger.info("Sent message %s", answer)
+					return next_update_id
+			
+			return next_update_id
+		return next_update_id
 	return update_id
 
 
