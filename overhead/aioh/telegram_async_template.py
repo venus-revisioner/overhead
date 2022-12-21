@@ -57,6 +57,7 @@ import time
 
 
 exit()
+bot = Bot()
 updater = Updater(TOKEN)
 
 
@@ -124,7 +125,7 @@ async def main_chatter() -> typing.NoReturn:
 	# Create the EventHandler and pass it your bot's token.
 
 	# Get the dispatcher to register handlers
-	updater, update, update_id = echo()
+	updater, update, update_id = echo(bot)
 	
 	for update in updater.bot.get_updates(offset=update_id, timeout=10):
 		update_id = main(update, update_id)
@@ -138,7 +139,7 @@ async def main_chatter() -> typing.NoReturn:
 	# THERE IS NO DISPATCHER IN TELEGRAM.AIO
 	# FIND A REPLACEMENT FOR IT !!!!
 	
-			update.message.reply_text(update.message.text, disable_notification=True)
+		update.message.reply_text(update.message.text, disable_notification=True)
 		# bot listens for users leaving or logging in to the chatroom
 		if update.message.left_chat_member is not None:
 			chatbot.subject_2_name = update.message.left_chat_member.username
@@ -182,8 +183,6 @@ async def main_chatter() -> typing.NoReturn:
 		update_id = update.update_id + 1
 		
 		id_counter += 1
-		
-		update_id_mem = update_id
 		
 
 def main(update: Update, update_id: typing.Optional[int]) -> int:
@@ -263,7 +262,6 @@ def main_async(update: Update, update_id: typing.Optional[int]) -> int:
 	# Run the bot until you press Ctrl-C or the process receives SIGINT,
 	# SIGTERM or SIGABRT. This should be used most of the time, since
 	# start_polling() is non-blocking and will stop the bot gracefully.
-	updater.idle()
 	
 
 async def main() -> NoReturn:

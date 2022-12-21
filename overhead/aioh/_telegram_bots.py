@@ -1,6 +1,4 @@
 
-
-
 class _kerttulibot:
 	"""
 	print(_kerttulibot.TOKEN)

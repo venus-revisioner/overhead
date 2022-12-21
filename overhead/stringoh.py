@@ -112,7 +112,6 @@ def get_word_frequencies(words):
 	"""
 	The get_word_frequencies function takes a list of words and returns a dictionary with the frequency of each word.
 	The function is case insensitive, so all words are converted to lowercase before counting.
-
 	:param words: Pass in a list of words to be counted
 	:return: A dictionary of words and their frequencies
 	"""
@@ -155,8 +154,6 @@ def clean_text(text):
 	"""
 	The clean_text function takes a string as input and returns a list of words
 	that have been cleaned by removing stopwords, punctuations, and numbers.
-
-
 	:param text: Pass in the text that needs to be cleaned
 	:return: A list of words
 	"""
@@ -166,7 +163,7 @@ def clean_text(text):
 	return words
 
 
-def example_1(text_file):
+def read_file_example(text_file):
 	from pprint import pprint
 	s = read_txt_file(text_file)
 	s = remove_line_numbers(s)
@@ -178,7 +175,27 @@ def example_1(text_file):
 	# s = get_unique_words(s)
 	s = get_word_frequencies(s)
 	# print(s)
-	pprint(s)
+	# pprint(s)
+	return s
+
+
+def analyze_string(s):
+	s = remove_newlines(s)
+	s = sanitize_extra_chars(s)
+	s = remove_punctuations(s)
+	s = remove_stopwords(s)
+	s = tokenize_string(s)
+	s = get_word_frequencies(s)
+	return s
+
+
+def characters_in_string(s):
+	s = remove_newlines(s)
+	s = remove_punctuations(s)
+	s = sanitize_text(s)
+	s = [c for c in s]
+	s = "".join(s)
+	return s
 
 # _TEXT_FILE = "/Volumes/GoogleDrive/Other computers/WIN10/PycharmProjects/OpenAI/AI_me.txt"
 # example_1(_TEXT_FILE)

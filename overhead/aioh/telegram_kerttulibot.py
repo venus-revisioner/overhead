@@ -5,12 +5,15 @@ from typing import Dict
 from typing import Literal
 from typing import Tuple
 
+import datetime
+
 from codex_chat_helpers import ChatHelpers
 from codex_class import CodexSmall
 
 
 class ChatBotsTalking:
-	def __init__(self, starter=None, definition=None, continuous_save=True, overwrite=False, load=None) -> None:
+	def __init__(self, starter=None, definition=None, continuous_save=True, make_init_str=False, load=None,
+	             timestamp=True) -> None:
 
 		self.command_list = ('/help', '/info', '/commands', '/stats', '/debug',
 							 '/set_definition', '/get_definition', '/parameters',
@@ -23,56 +26,50 @@ class ChatBotsTalking:
 
 		self.starter = starter
 		self.definition = definition
-		self.overwrite = overwrite
 		self.continuous_save: bool = continuous_save
 		self.load_file = load
-		self.helper = ChatHelpers(starter, definition, continuous_save, overwrite, load)
-		self.bot1_name: Literal['bot1'] = "bot1"
-		self.bot2_name: Literal['bot2'] = "bot2"
+		self.timestamp = timestamp
+		self.helper = ChatHelpers(starter, definition, continuous_save, make_init_str, load, timestamp)
+		self.helper.limit_paragraph = 80
 
 		self.pause_flag: Literal[False] = False
-
-		if self.subject_1_name is None:
-			self.subject_1_name: Literal['bot1'] = self.bot1_name
-
-		if self.subject_2_name is None:
-			self.subject_2_name: Literal['bot2'] = self.bot2_name
 
 		self.helper.subject_1_name, self.helper.subject_2_name = self.subject_1_name, self.subject_2_name
 
 	def bot2human_async(self) -> None:
 		self.helper.subject_1_name = self.subject_1_name
 		self.helper.subject_2_name = self.subject_2_name
-
 		self.helper.chat_init_string(self.starter, self.definition, self.subject_1_name, self.subject_2_name)
-		self.helper.limit_paragraph = 100
 		
 		# create a chatbot
-		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.593, max_tokens=256, top_p=1,
-							   stop_str="\n\n", frequency_penalty=0.3, presence_penalty=0.2)
+		self.bot1 = CodexSmall(engine="code-davinci-002", temperature=0.996, max_tokens=128, top_p=1,
+							   stop_str="\n\n", frequency_penalty=0.2, presence_penalty=0.05)
 		
 		# --------------------------------------------------------------------#
 	def wait_user_input(self, update) -> None:
 		# if update.message and update.message.text:
-		user_comment = self.bot1.sanitize(update.message.text)
+		# user_comment = self.bot1.sanitize(update.message.text)
+		user_comment = update.message.text
 		user_name = update.message.from_user.username
 		if update.message.from_user["first_name"] is not None:
 			user_name = update.message.from_user["first_name"]
 		if update.message.from_user["last_name"] is not None:
 			user_name += " " + update.message.from_user["last_name"]
-		# print(update.__dict__())
-		# user_name = user_name
+		# user_time = datetime.datetime.strftime(update.message.date, "%H:%M:%S")
+		user_str = f'{user_name}'
+		self.helper.make_bot_comment(user_comment, user_str, end="\n", save_to_file=True, verbose=False)
 		print(f'{user_name}: {user_comment}')
-		self.helper.make_bot_comment(user_comment, str(user_name), end="\n", save_to_file=True, verbose=False)
 		self.helper.paragraph_popper()
 
 	def answer_user_input(self, update=None) -> str:
 		# use codex to give short answer, use whole discussion (limited by max tokens and rate of query)
 		self.bot1.prompt = self.helper.conversation + f"{self.subject_1_name}: "
-		bot_response: str|None = self.bot1.completion()
-		self.helper.paragraph_popper()
-		self.helper.make_bot_comment(bot_response, self.subject_1_name, end="\n\n", save_to_file=True, verbose=False)
+		bot_response = self.bot1.completion()
+		# user_time = datetime.datetime.strftime(update.message.date, "%H:%M:%S")
+		user_str = f'{self.subject_1_name}'
+		self.helper.make_bot_comment(bot_response, user_str, end="\n\n", save_to_file=True, verbose=False)
 		print(f"{self.subject_1_name}: {bot_response}")
+		# self.helper.paragraph_popper()
 		return bot_response
 	# --------------------------------------------------------------------#
 
@@ -86,16 +83,17 @@ class ChatBotsTalking:
 			return f'Available commands: {self.command_list}'
 
 		if comment == "help":
-			s: dict[str, str] = self.helper.info()
+			s: dict[str, str] = self.helper.info
 			return s, "\n" + f'Available commands: {self.command_list}'
 
 		if comment == "info":
-			return self.helper.info()
+			return self.helper.info
 
 		if comment == "stats":
-			return self.helper.conversation_info()
+			return self.helper.conversation_info
+		
 
-		if comment == "debug":
+		if comment == "debug_latest":
 			print("Prompt: ", self.bot1.prompt)
 			print("Conversation: ", self.helper.conversation_info)
 			return self.bot1.prompt
@@ -117,11 +115,13 @@ class ChatBotsTalking:
 			freq_pen = self.bot1.__dict__['frequency_penalty']
 			pres_pen = self.bot1.__dict__['presence_penalty']
 			return f"temperature: {t}, max_tokens: {max_tokens}, frequency_penalty: {freq_pen}, presence_penalty: {pres_pen}"
-
+		
+		time.sleep(2)
+		return "Command not found"
 		# --------------------------------------------------------------------#
 
 	def help_info(self) -> None:
-		print(self.helper.info())
+		print(self.helper.info)
 		print(f'Available commands: {self.command_list}')
 
 	def parameters(self, bot) -> str:
