@@ -1,16 +1,12 @@
 # import tokenizer
 import datetime
 import os
-import sys
 import time
 from typing import Any
-from typing import List
 from typing import Literal
-from typing import Set
-from typing import Tuple
 
-import overhead
 from overhead import stringoh
+
 
 class ChatHelpers:
 	
@@ -117,17 +113,17 @@ class ChatHelpers:
 		return self.info_dict
 	
 	def analyze_conversation(self) -> tuple[Any, Any]:
-		self.word_count_dict = overhead.stringoh.analyze_string(self.conversation)
-		self.unique_words = overhead.stringoh.get_unique_words(self.conversation)
+		self.word_count_dict = stringoh.analyze_string(self.conversation)
+		self.unique_words = stringoh.get_unique_words(self.conversation)
 		return self.word_count_dict, self.unique_words
 	
 	@staticmethod
 	def words(s):
-		return overhead.stringoh.get_words(s)
+		return stringoh.get_words(s)
 	
 	@staticmethod
 	def paragraphs(s):
-		return overhead.stringoh.get_paragraphs_from_text(s)
+		return stringoh.get_paragraphs_from_text(s)
 	
 	def conversation_length(self, s) -> int:
 		return len(stringoh.characters_in_string(s))
