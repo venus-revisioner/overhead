@@ -63,6 +63,8 @@ overhead/aioh/cuda_streams.py
 overhead/aioh/image_batched.py
 overhead/aioh/image_upscale.py
 overhead/aioh/kerttulibot_chatroom_1.txt
+overhead/aioh/kerttulibot_chatroom_2.txt
+overhead/aioh/kerttulibot_chatroom_3.txt
 overhead/aioh/kerttulibot_updates.json
 overhead/aioh/model_seq_ann.py
 overhead/aioh/telegram_async_original.py
