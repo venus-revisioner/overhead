@@ -1,20 +1,0 @@
-
-_python:S2208"GImport only needed names or import the module and then use its members.(šÏÍó
-;python:S125F"Remove this commented out code.(Ë£„şÿÿÿÿ
-;python:S125W"Remove this commented out code.(ˆ¢Ã§ÿÿÿÿÿ
-;python:S125e"Remove this commented out code.(Ñøåğÿÿÿÿÿ
-7python:S125¡"Remove this commented out code.(ºÌËû
-<python:S125®"Remove this commented out code.(ÿ²ààûÿÿÿÿ
-upython:S4143Ì"\Verify this is the key that was intended; a value has already been saved for it on line 326.(ò ×«
-upython:S4143Ë"\Verify this is the key that was intended; a value has already been saved for it on line 325.(€ËÒÊ
-tpython:S4143É"\Verify this is the key that was intended; a value has already been saved for it on line 323.(§¿Ñ,
-upython:S4143È"\Verify this is the key that was intended; a value has already been saved for it on line 322.(ã”˜ë
-upython:S4143Ê"\Verify this is the key that was intended; a value has already been saved for it on line 324.(ê×ÖÅ
-tpython:S4143Ç"\Verify this is the key that was intended; a value has already been saved for it on line 321.(û µ
-<python:S125æ"Remove this commented out code.(–˜›üÿÿÿÿ
-<python:S125î"Remove this commented out code.(ÁˆÈ·şÿÿÿÿ
-<python:S125€"Remove this commented out code.(ú²Æ¨ûÿÿÿÿ
-<python:S125„"Remove this commented out code.(ôÓ€˜ÿÿÿÿÿ
-fpython:S1854œ"HRemove this assignment to local variable 'tex'; the value is never used.(™‹ˆ­ÿÿÿÿÿ
-7python:S125"Remove this commented out code.(Ë¿¤×
-7python:S125³"Remove this commented out code.(Çœ–§
